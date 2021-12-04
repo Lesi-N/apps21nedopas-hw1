@@ -9,8 +9,8 @@ import java.util.InputMismatchException;
 public class TemperatureSeriesAnalysis {
     private double[] series;
     private int currentSize;
-    private int minValue = -273;
-    private int maxValue = 1000;
+    private int MINVALUE = -273;
+    private int MAXVALUE = 1000;
 
     public TemperatureSeriesAnalysis() {
         this.series = new double[1];
@@ -18,7 +18,7 @@ public class TemperatureSeriesAnalysis {
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
 
-        if (!checkCorrectTemp(temperatureSeries)){
+        if (!checkCorrectTemp(temperatureSeries)) {
             throw new InputMismatchException();
         }
 
@@ -26,9 +26,9 @@ public class TemperatureSeriesAnalysis {
         this.currentSize = series.length;
     }
 
-    public boolean checkCorrectTemp(double[] temperatureSeries){
-        for (double temp : temperatureSeries){
-            if (temp < minValue){
+    public boolean checkCorrectTemp(double[] temperatureSeries) {
+        for (double temp : temperatureSeries) {
+            if (temp < MINVALUE) {
                 return false;
             }
         }
@@ -36,35 +36,36 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double average() {
-        if (this.series.length == 0){
+        if (this.series.length == 0) {
             throw new IllegalArgumentException();
         }
         double sum = 0;
-        for (int i = 0; i < currentSize; i++){
+        for (int i = 0; i < currentSize; i++) {
             sum += this.series[i];
         }
         return sum / currentSize;
     }
 
     public double deviation() {
-        if (this.series.length == 0){
+        if (this.series.length == 0) {
             throw new IllegalArgumentException();
         }
 
         double avg = this.average();
         double dev = 0;
-        for(double num: series) {
-            dev += Math.pow(num - avg, 2);
+        for (double num: series) {
+            dev += (num - avg) * (num - avg);
         }
-        return (double) Math.round(Math.sqrt(dev / series.length)*100)/100 ;
+        int ROUNDER = 100;
+        return (double) Math.round(Math.sqrt(dev / series.length)*ROUNDER)/ROUNDER;
     }
 
     public double min() {
-        return this.findTempClosestToValue(minValue);
+        return this.findTempClosestToValue(MINVALUE);
     }
 
     public double max() {
-        return this.findTempClosestToValue(maxValue);
+        return this.findTempClosestToValue(MAXVALUE);
     }
 
     public double findTempClosestToZero() {
@@ -72,11 +73,11 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double findTempClosestToValue(double tempValue) {
-        if (this.series.length == 0){
+        if (this.series.length == 0) {
             throw new IllegalArgumentException();
         }
         double closest = series[0];
-        for (double val : series){
+        for (double val : series) {
             if (Math.abs(tempValue - val) < Math.abs(tempValue - closest)){
                 closest = val;
             } else if (Math.abs(tempValue - val) == Math.abs(tempValue - closest)){

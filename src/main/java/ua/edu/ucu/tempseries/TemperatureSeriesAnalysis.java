@@ -1,52 +1,123 @@
 package ua.edu.ucu.tempseries;
 
+import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.InputMismatchException;
+
+@Getter
 public class TemperatureSeriesAnalysis {
+    private double[] series;
+    private int currentSize;
+    private int minValue = -273;
 
     public TemperatureSeriesAnalysis() {
-
+        this.series = new double[1];
     }
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
-
+        for (double temp : temperatureSeries){
+            if (temp < minValue){
+                throw new InputMismatchException();
+            }
+        }
+        this.series = temperatureSeries;
+        this.currentSize = series.length;
     }
 
     public double average() {
-        return -1;
+        if (this.series.length == 0){
+            throw new IllegalArgumentException();
+        }
+        return Arrays.stream(series).sum() / series.length;
     }
 
     public double deviation() {
-        return 0;
+        if (this.series.length == 0){
+            throw new IllegalArgumentException();
+        }
+
+        double avg = this.average();
+        double dev = 0;
+        for(double num: series) {
+            dev += Math.pow(num - avg, 2);
+        }
+        return (double) Math.round(Math.sqrt(dev / series.length)*100)/100 ;
     }
 
     public double min() {
-        return 0;
+        if (this.series.length == 0){
+            throw new IllegalArgumentException();
+        }
+        return Arrays.stream(series).min().orElse(-1);
     }
 
     public double max() {
-        return 0;
+        if (this.series.length == 0){
+            throw new IllegalArgumentException();
+        }
+        return Arrays.stream(series).max().orElse(-1);
     }
 
     public double findTempClosestToZero() {
-        return 0;
+        return this.findTempClosestToValue(0);
     }
 
     public double findTempClosestToValue(double tempValue) {
-        return 0;
+        if (this.series.length == 0){
+            throw new IllegalArgumentException();
+        }
+        double closest = series[0];
+        for (double val : series){
+            if (Math.abs(tempValue - val) < Math.abs(tempValue - val)){
+                closest = val;
+            } else if (Math.abs(tempValue - val) == Math.abs(tempValue - val)){
+                if (val > closest){
+                    closest = val;
+                }
+            }
+        }
+        return closest;
     }
 
-    public double[] findTempsLessThen(double tempValue) {
-        return null;
+    public double[] findTempsLessThan(double tempValue) {
+        double[] lessth = new double[series.length];
+        int idx = 0;
+        for (double val : series){
+            if (val <= tempValue){
+                lessth[idx] = val;
+                idx++;
+            }
+        }
+        return lessth;
     }
 
-    public double[] findTempsGreaterThen(double tempValue) {
-        return null;
+    public double[] findTempsGreaterThan(double tempValue) {
+        double[] greaterth = new double[series.length];
+        int idx = 0;
+        for (double val : series){
+            if (val >= tempValue) {
+                greaterth[idx] = val;
+                idx++;
+            }
+        }
+        return greaterth;
     }
 
-    public TempSummaryStatistics summaryStatistics() {
-        return null;
+    public TempSummaryStatistics summaryStatistics() throws IllegalArgumentException {
+
+        return new TempSummaryStatistics(this.average(),
+                this.deviation(), this.max(), this.min());
     }
 
     public int addTemps(double... temps) {
-        return 0;
+        for (double temp : temps){
+            if (currentSize == series.length){
+                series = Arrays.copyOf(series, series.length*2);
+            }
+            series[currentSize] = temp;
+            currentSize++;
+        }
+        return (int) Arrays.stream(series).sum();
     }
 }

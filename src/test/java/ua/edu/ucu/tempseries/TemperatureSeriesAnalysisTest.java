@@ -10,14 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.InputMismatchException;
 
 public class TemperatureSeriesAnalysisTest {
-    private double[] temperatureSeries;
-    private TemperatureSeriesAnalysis seriesAnalysis;
+    private double[] temperatureSeries1 = new double[]{3.0, -5.0, 1.0, 5.0};
+    private double[] temperatureSeries2 = new double[]{-1.0};
+    private double[] temperatureSeries3 = new double[]{};
+    private TemperatureSeriesAnalysis seriesAnalysis1 = new TemperatureSeriesAnalysis(temperatureSeries1);
+    private TemperatureSeriesAnalysis seriesAnalysis2 = new TemperatureSeriesAnalysis(temperatureSeries2);
+    private TemperatureSeriesAnalysis seriesAnalysis3 = new TemperatureSeriesAnalysis(temperatureSeries3);
 
-    @BeforeEach
-    public void setUp(){
-        temperatureSeries = new double[]{3.0, -5.0, 1.0, 5.0};
-        seriesAnalysis = new TemperatureSeriesAnalysis();
-    }
 
     @Test(expected = InputMismatchException.class)
     public void testMinTemp() {
@@ -33,7 +32,7 @@ public class TemperatureSeriesAnalysisTest {
         double expResult = -1.0;
 
         // call tested method
-        double actualResult = seriesAnalysis.average();
+        double actualResult = seriesAnalysis2.average();
 
         // compare expected result with actual result
         assertEquals(expResult, actualResult, 0.00001);
@@ -43,14 +42,14 @@ public class TemperatureSeriesAnalysisTest {
     public void testAverageWithEmptyArray() {
 
         // expect exception here
-        seriesAnalysis.average();
+        seriesAnalysis3.average();
     }
 
     @Test
     public void testAverage() {
         double expResult = 1.0;
 
-        double actualResult = seriesAnalysis.average();
+        double actualResult = seriesAnalysis1.average();
         
         assertEquals(expResult, actualResult, 0.00001);        
     }
@@ -58,7 +57,7 @@ public class TemperatureSeriesAnalysisTest {
     public void testDeviation(){
 
         double expected = 3.74;
-        double actual = seriesAnalysis.deviation();
+        double actual = seriesAnalysis1.deviation();
 
         assertEquals(expected, actual, 0.00001);
     }
@@ -67,7 +66,7 @@ public class TemperatureSeriesAnalysisTest {
     public void testMax(){
 
         double expected = 5.0;
-        double actual = seriesAnalysis.max();
+        double actual = seriesAnalysis1.max();
 
         assertEquals(expected, actual, 0.00001);
     }
@@ -76,7 +75,7 @@ public class TemperatureSeriesAnalysisTest {
     public void testMin(){
 
         double expected = -5.0;
-        double actual = seriesAnalysis.min();
+        double actual = seriesAnalysis1.min();
 
         assertEquals(expected, actual, 0.00001);
     }
@@ -86,16 +85,17 @@ public class TemperatureSeriesAnalysisTest {
 
         double val = 2.0;
 
-        double expectedVal = 3.0;
-        double actualVal = seriesAnalysis.findTempClosestToValue(val);
+        double expectedVal = 5.0;
+        double actualVal = seriesAnalysis1.findTempClosestToValue(val);
         assertEquals(expectedVal, actualVal,0.00001);
 
         double expectedZero = 1.0;
-        double actualZero = seriesAnalysis.findTempClosestToValue(0);
+        double actualZero = seriesAnalysis1.findTempClosestToValue(0);
         assertEquals(expectedZero, actualZero,0.00001);
 
         double[] series = {-0.3, 0.3};
-        assertEquals(seriesAnalysis.findTempClosestToZero(), 0.3, 0.00001);
+        TemperatureSeriesAnalysis seriesAnalysis4 = new TemperatureSeriesAnalysis(series);
+        assertEquals(seriesAnalysis4.findTempClosestToZero(), 0.3, 0.00001);
     }
 
     @Test
@@ -103,15 +103,15 @@ public class TemperatureSeriesAnalysisTest {
 
         double val = 2.0;
 
-        double[] expected = {-5.0, 0.1};
-        double[] actual = seriesAnalysis.findTempsLessThan(val);
-        assertEquals(expected, actual);
+        double[] expected = new double[]{-5.0, 1.0, 0.0, 0.0};
+        double[] actual = seriesAnalysis1.findTempsLessThan(val);
+        assertArrayEquals(expected, actual,0.00001);
 
         double newval = -6.0;
 
-        double[] newexpected = {};
-        double[] newactual = seriesAnalysis.findTempsLessThan(newval);
-        assertEquals(newexpected, newactual);
+        double[] newexpected = new double[]{0.0, 0.0, 0.0, 0.0};
+        double[] newactual = seriesAnalysis1.findTempsLessThan(newval);
+        assertArrayEquals(newexpected, newactual,0.00001);
 
     }
 
@@ -119,23 +119,23 @@ public class TemperatureSeriesAnalysisTest {
     public void testFindGreaterThan(){
         double val = 2.0;
 
-        double[] expected = {3.0, 5.0};
-        double[] actual = seriesAnalysis.findTempsLessThan(val);
-        assertEquals(expected, actual);
+        double[] expected = {3.0, 5.0, 0.0, 0.0};
+        double[] actual = seriesAnalysis1.findTempsGreaterThan(val);
+        assertArrayEquals(expected, actual, 0.00001);
 
         double newval = 6.0;
 
-        double[] newexpected = {};
-        double[] newactual = seriesAnalysis.findTempsLessThan(newval);
-        assertEquals(newexpected, newactual);
+        double[] newexpected = {0.0, 0.0, 0.0, 0.0};
+        double[] newactual = seriesAnalysis1.findTempsGreaterThan(newval);
+        assertArrayEquals(newexpected, newactual, 0.00001);
     }
 
     @Test
     public void testSummary(){
 
         TempSummaryStatistics expected = new
-                TempSummaryStatistics(1.0,3.74,-5.0, 0.5);
-        TempSummaryStatistics actual = seriesAnalysis.summaryStatistics();
+                TempSummaryStatistics(1.0,3.74,-5.0, 5.0);
+        TempSummaryStatistics actual = seriesAnalysis1.summaryStatistics();
 
         assertEquals(expected.avgTemp, actual.avgTemp, 0.00001);
         assertEquals(expected.devTemp, actual.devTemp, 0.00001);
@@ -145,14 +145,15 @@ public class TemperatureSeriesAnalysisTest {
     }
     @Test
     public void testAddTemps(){
-        seriesAnalysis.addTemps(10.0, 0.0);
-        assertEquals(seriesAnalysis.getSeries(), new double[]{3.0, -5.0, 1.0, 5.0, 10.0, 0.0, 0.0, 0.0});
+        seriesAnalysis1.addTemps(10.0, 0.0);
+        assertArrayEquals(seriesAnalysis1.getSeries(),
+                new double[]{3.0, -5.0, 1.0, 5.0, 10.0, 0.0, 0.0, 0.0}, 0.00001);
 
     }
 
     @Test(expected = InputMismatchException.class)
     public void testAddTooSmallTemps(){
-        seriesAnalysis.addTemps(-274);
+        seriesAnalysis1.addTemps(-274.0);
 
     }
 }

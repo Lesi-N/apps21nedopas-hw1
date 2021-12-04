@@ -101,7 +101,7 @@
                 <configuration>
                     <sourceEncoding>UTF8</sourceEncoding>
                     <minimumTokens>30</minimumTokens>
-                    <targetJdk>17</targetJdk>
+                    <targetJdk>16</targetJdk>
                 </configuration>
                 <executions>
                     <execution>
@@ -118,8 +118,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+
+                    <source>16</source>
+                    <target>16</target>
+
                 </configuration>
             </plugin>
 

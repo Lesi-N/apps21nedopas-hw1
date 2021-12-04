@@ -2,10 +2,8 @@ package ua.edu.ucu.tempseries;
 
 import static org.junit.Assert.*;
 
-import lombok.Builder;
-import org.junit.Before;
+
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.util.InputMismatchException;
 

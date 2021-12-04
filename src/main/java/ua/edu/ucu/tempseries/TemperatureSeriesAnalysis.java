@@ -10,6 +10,7 @@ public class TemperatureSeriesAnalysis {
     private double[] series;
     private int currentSize;
     private int minValue = -273;
+    private int maxValue = 1000;
 
     public TemperatureSeriesAnalysis() {
         this.series = new double[1];
@@ -38,7 +39,11 @@ public class TemperatureSeriesAnalysis {
         if (this.series.length == 0){
             throw new IllegalArgumentException();
         }
-        return Arrays.stream(series).sum() / series.length;
+        double sum = 0;
+        for (int i = 0; i < currentSize; i++){
+            sum += this.series[i];
+        }
+        return sum / currentSize;
     }
 
     public double deviation() {
@@ -55,17 +60,11 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double min() {
-        if (this.series.length == 0){
-            throw new IllegalArgumentException();
-        }
-        return Arrays.stream(series).min().orElse(-1);
+        return this.findTempClosestToValue(minValue);
     }
 
     public double max() {
-        if (this.series.length == 0){
-            throw new IllegalArgumentException();
-        }
-        return Arrays.stream(series).max().orElse(-1);
+        return this.findTempClosestToValue(maxValue);
     }
 
     public double findTempClosestToZero() {
@@ -78,10 +77,10 @@ public class TemperatureSeriesAnalysis {
         }
         double closest = series[0];
         for (double val : series){
-            if (Math.abs(tempValue - val) < Math.abs(closest - val)){
+            if (Math.abs(tempValue - val) < Math.abs(tempValue - closest)){
                 closest = val;
-            } else if (Math.abs(tempValue - val) == Math.abs(closest - val)){
-                if (val > closest){
+            } else if (Math.abs(tempValue - val) == Math.abs(tempValue - closest)){
+                if (closest < 0){
                     closest = val;
                 }
             }
@@ -90,7 +89,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double[] findTempsLessThan(double tempValue) {
-        double[] lessth = new double[series.length];
+        double[] lessth = new double[currentSize];
         int idx = 0;
         for (double val : series){
             if (val <= tempValue){
@@ -102,7 +101,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double[] findTempsGreaterThan(double tempValue) {
-        double[] greaterth = new double[series.length];
+        double[] greaterth = new double[currentSize];
         int idx = 0;
         for (double val : series){
             if (val >= tempValue) {

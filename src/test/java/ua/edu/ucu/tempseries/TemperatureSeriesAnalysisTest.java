@@ -85,7 +85,7 @@ public class TemperatureSeriesAnalysisTest {
 
         double val = 2.0;
 
-        double expectedVal = 5.0;
+        double expectedVal = 3.0;
         double actualVal = seriesAnalysis1.findTempClosestToValue(val);
         assertEquals(expectedVal, actualVal,0.00001);
 
